@@ -1,4 +1,4 @@
-import type { Airport } from '@/types/airport';
+import type { Airport, AirportApiResponse } from '@/types/airport';
 
 // Data de ejemplo antes de hacer peticiones API
 const mockAirports: Airport[] = [
@@ -215,19 +215,33 @@ const mockAirports: Airport[] = [
 // Simulación de delay para mostrar estado de carga
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function searchAirportsApi(query: string): Promise<Airport[]> {
+export async function searchAirportsApi(query: string): Promise<AirportApiResponse> {
     // Simulación de llamada API
-    await delay(1500);
+    await delay(100);
 
     // Filtrar data basados en la query
-    const lowerQuery = query.toLowerCase();
+    const lowerQuery = query.toLowerCase().trim();
+
     const filtered = mockAirports.filter(
-        (airport) =>
-            airport.airport_name.toLowerCase().includes(lowerQuery) ||
-            airport.airport_id.toLowerCase().includes(lowerQuery)
+        (airport) => {
+            if (!lowerQuery) return true;
+
+            return(
+                airport.airport_name.toLowerCase().includes(lowerQuery) ||
+                airport.airport_id.toLowerCase().includes(lowerQuery)
+            )
+        }
     );
 
-    return filtered;
+    return {
+        pagination: {
+            count: filtered.length,
+            limit: 0,
+            offset: 0,
+            total: filtered.length
+        },
+        data: filtered
+    };
 
     /*
     // Implementacion real de API

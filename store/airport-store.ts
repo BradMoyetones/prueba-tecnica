@@ -1,9 +1,10 @@
 import { create } from 'zustand';
-import type { Airport } from '@/types/airport';
+import { persist } from 'zustand/middleware';
+import type { Airport, AirportApiResponse } from '@/types/airport';
 import { searchAirportsApi } from '@/lib/api/airports';
 
 interface AirportStore {
-    airports: Airport[];
+    data: AirportApiResponse | null;
     isLoading: boolean;
     error: string | null;
     searchAirports: (query: string) => Promise<void>;
@@ -11,27 +12,34 @@ interface AirportStore {
     clearError: () => void;
 }
 
-export const useAirportStore = create<AirportStore>((set, get) => ({
-    airports: [],
-    isLoading: false,
-    error: null,
+export const useAirportStore = create<AirportStore>()(
+    persist(
+        (set, get) => ({
+            data: null,
+            isLoading: false,
+            error: null,
 
-    searchAirports: async (query: string) => {
-        set({ isLoading: true, error: null });
+            searchAirports: async (query: string) => {
+                set((state) => ({ ...state, isLoading: true, error: null }));
 
-        try {
-            const airports = await searchAirportsApi(query);
-            set({ airports, isLoading: false });
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Fallo al buscar aeropuertos';
-            set({ error: errorMessage, isLoading: false, airports: [] });
+                try {
+                    const data = await searchAirportsApi(query);
+                    set((state) => ({ data: { ...state.data, ...data }, isLoading: false }));
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : 'Fallo al buscar aeropuertos';
+                    set((state) => ({ error: errorMessage, isLoading: false, data: state.data }));
+                }
+            },
+
+            getAirportById: (id: string) => {
+                const { data } = get();
+                return data?.data.find((airport) => airport.id === id);
+            },
+
+            clearError: () => set({ error: null }),
+        }),
+        {
+            name: 'aviationstack',
         }
-    },
-
-    getAirportById: (id: string) => {
-        const { airports } = get();
-        return airports.find((airport) => airport.id === id);
-    },
-
-    clearError: () => set({ error: null }),
-}));
+    )
+);

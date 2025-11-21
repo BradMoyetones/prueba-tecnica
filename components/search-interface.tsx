@@ -10,7 +10,8 @@ import { MotionEffect } from './animate/motion-effect';
 
 export function SearchInterface() {
     const [hasSearched, setHasSearched] = useState(false);
-    const { airports, isLoading, error } = useAirportStore();
+    
+    const { data, isLoading, error } = useAirportStore();
 
     const handleSearch = () => {
         setHasSearched(true);
@@ -27,6 +28,7 @@ export function SearchInterface() {
                             className="flex flex-col items-center gap-4 max-w-2xl w-full"
                         >
                             <MotionEffect
+                                layoutId='title'
                                 slide={{
                                     direction: 'down',
                                 }}
@@ -42,6 +44,7 @@ export function SearchInterface() {
                                 </div>
                             </MotionEffect>
                             <MotionEffect
+                                layoutId='search'
                                 slide={{
                                     direction: 'down',
                                 }}
@@ -55,16 +58,11 @@ export function SearchInterface() {
                         </div>
                     </div>
                 ) : (
-                    <motion.div
+                    <div
                         key="searched"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
                         className="min-h-screen"
                     >
                         <motion.header
-                            initial={{ y: -100, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, ease: 'easeOut' }}
                             className="sticky top-0 z-50 glassmorphism"
                         >
                             <div className="container mx-auto px-4 py-6">
@@ -103,7 +101,7 @@ export function SearchInterface() {
                                 </motion.div>
                             )}
 
-                            {!isLoading && !error && airports.length === 0 && (
+                            {!isLoading && !error && data?.data.length === 0 && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -115,24 +113,24 @@ export function SearchInterface() {
                                 </motion.div>
                             )}
 
-                            {!isLoading && airports.length > 0 && (
+                            {data && !isLoading && data.data.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 0.2 }}
                                 >
                                     <p className="text-muted-foreground mb-6">
-                                        {airports.length} aeropuertos encontrados
+                                        {data.data.length} aeropuertos encontrados
                                     </p>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {airports.map((airport, index) => (
+                                        {data.data.map((airport, index) => (
                                             <AirportCard key={airport.id} airport={airport} index={index} />
                                         ))}
                                     </div>
                                 </motion.div>
                             )}
                         </div>
-                    </motion.div>
+                    </div>
                 )}
             </AnimatePresence>
         </div>

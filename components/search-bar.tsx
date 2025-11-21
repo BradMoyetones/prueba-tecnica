@@ -17,14 +17,12 @@ interface SearchBarProps {
 
 export function SearchBar({ onSearch, compact = false }: SearchBarProps) {
     const [query, setQuery] = useState('');
-    const { searchAirports } = useAirportStore();
+    const { searchAirports, isLoading } = useAirportStore();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (query.trim()) {
-            await searchAirports(query);
-            onSearch?.();
-        }
+        await searchAirports(query);
+        onSearch?.();
     };
 
     return (
@@ -36,6 +34,7 @@ export function SearchBar({ onSearch, compact = false }: SearchBarProps) {
                         type="text"
                         placeholder="Buscar por nombre del aeropuerto, ciudad o código..."
                         value={query}
+                        disabled={isLoading}
                         onChange={(e) => setQuery(e.target.value)}
                         className={cn(
                             'pl-12 bg-card! border-border text-foreground placeholder:text-muted-foreground',

@@ -172,4 +172,8 @@
   body {
     @apply bg-background text-foreground;
   }
+  .leaflet-marker-icon.leaflet-zoom-animated.leaflet-interactive {
+    @apply size-10!;
+  }
 }
+
