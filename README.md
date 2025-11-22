@@ -120,7 +120,7 @@ Se implementaron pruebas unitarias para asegurar la robustez de componentes clav
 Para ejecutar las pruebas:
 
 ```bash
-npm test
+npm run test
 ```
 
 **Cobertura principal:**
