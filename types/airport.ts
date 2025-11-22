@@ -17,7 +17,7 @@ export interface Airport {
 
 export interface AirportApiResponse {
     data: Airport[]
-    pagination?: {
+    pagination: {
         offset: number
         limit: number
         count: number

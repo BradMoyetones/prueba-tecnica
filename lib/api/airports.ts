@@ -215,7 +215,7 @@ const mockAirports: Airport[] = [
 // Simulación de delay para mostrar estado de carga
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function searchAirportsApi(query: string): Promise<AirportApiResponse> {
+export async function searchAirportsApi(query: string, offset = 0, limit = 10): Promise<AirportApiResponse> {
     // Simulación de llamada API
     await delay(100);
 
@@ -233,14 +233,16 @@ export async function searchAirportsApi(query: string): Promise<AirportApiRespon
         }
     );
 
+    const paginatedData = filtered.slice(offset, offset + limit)
+
     return {
         pagination: {
             count: filtered.length,
-            limit: 0,
-            offset: 0,
+            limit,
+            offset,
             total: filtered.length
         },
-        data: filtered
+        data: paginatedData
     };
 
     /*
@@ -248,8 +250,9 @@ export async function searchAirportsApi(query: string): Promise<AirportApiRespon
     try {
         const API_KEY = process.env.NEXT_PUBLIC_AVIATIONSTACK_API_KEY
         const API_URL = process.env.NEXT_PUBLIC_AVIATIONSTACK_API_URL
+
         const response = await fetch(
-            `${API_URL}/airports?access_key=${API_KEY}&search=${query}&limit=20`
+            `${API_URL}/airports?access_key=${API_KEY}&search=${query}&limit=${limit}&offset=${offset}`
         )
 
         if (!response.ok) {
@@ -258,11 +261,10 @@ export async function searchAirportsApi(query: string): Promise<AirportApiRespon
 
         const data = await response.json()
         
-        const airports: Airport[] = data.data.map((item: Airport) => ({
-            ...item
-        }))
-
-        return airports
+        return {
+            data: data.data,
+            pagination: data.pagination
+        }
     } catch (error) {
         console.error('Error haciendo fetch:', error)
         throw error

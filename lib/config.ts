@@ -1,5 +1,5 @@
 export const siteConfig = {
-    name: "Quote",
+    name: "Prueba Tecnica",
     url: "https://prueba-tecnica.itsbrad.dev",
     description: "Prueba tecnica consumiendo la API de AviationStack",
     links: {

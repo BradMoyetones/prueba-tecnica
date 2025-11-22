@@ -2,7 +2,6 @@
 
 import type React from 'react';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAirportStore } from '@/store/airport-store';
@@ -16,12 +15,12 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ onSearch, compact = false }: SearchBarProps) {
-    const [query, setQuery] = useState('');
-    const { searchAirports, isLoading } = useAirportStore();
+    const { searchQuery, setSearchQuery, isLoading, searchAirports } = useAirportStore()
 
+    // Subit y prevencion de envio por defecto
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await searchAirports(query);
+        await searchAirports(searchQuery);
         onSearch?.();
     };
 
@@ -33,9 +32,9 @@ export function SearchBar({ onSearch, compact = false }: SearchBarProps) {
                     <Input
                         type="text"
                         placeholder="Buscar por nombre del aeropuerto, ciudad o código..."
-                        value={query}
                         disabled={isLoading}
-                        onChange={(e) => setQuery(e.target.value)}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         className={cn(
                             'pl-12 bg-card! border-border text-foreground placeholder:text-muted-foreground',
                             compact ? 'h-10' : 'h-14'
@@ -46,9 +45,10 @@ export function SearchBar({ onSearch, compact = false }: SearchBarProps) {
                     <Button
                         type="submit"
                         size={compact ? 'default' : 'default'}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground h-full aspect-square cursor-pointer"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground h-full sm:aspect-square cursor-pointer w-full sm:w-auto"
                     >
                         <Search />
+                        <span className='flex sm:hidden'>Buscar</span>
                     </Button>
                 </AnimateIcon>
             </div>

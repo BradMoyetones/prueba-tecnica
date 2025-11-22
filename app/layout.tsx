@@ -5,6 +5,7 @@ import { META_THEME_COLORS, siteConfig } from "@/lib/config";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AnimatedBackground } from "@/components/background";
 
 export const metadata: Metadata = {
   title: {
@@ -48,6 +49,7 @@ export default function RootLayout({
         className={cn("antialiased font-onest", fontVariables)}
       >
         <ThemeProvider>
+          <AnimatedBackground />
           {children}
         </ThemeProvider>
       </body>
