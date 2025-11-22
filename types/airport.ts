@@ -24,3 +24,5 @@ export interface AirportApiResponse {
         total: number
     }
 }
+
+export type SearchMode = "cached" | "api" // Se genera este tipado para una busqueda cacheada, ya que al no tener paga en API no permite acceder al media query search

@@ -212,10 +212,40 @@ const mockAirports: Airport[] = [
     },
 ];
 
-// Simulación de delay para mostrar estado de carga
+// Simulación de delay para mostrar estado de carga en modo Pruebas
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Busqueda cacheada
+export function searchAirportsCached(cachedData: Airport[], query: string, offset = 0, limit = 12): AirportApiResponse {
+    const lowerQuery = query.toLowerCase().trim();
+
+    const filtered = lowerQuery
+        ? cachedData.filter(
+              (airport) =>
+                  airport.airport_name.toLowerCase().includes(lowerQuery) ||
+                  airport.iata_code?.toLowerCase().includes(lowerQuery) ||
+                  airport.icao_code?.toLowerCase().includes(lowerQuery) ||
+                  airport.city_iata_code.toLowerCase().includes(lowerQuery) ||
+                  airport.country_name?.toLowerCase().includes(lowerQuery)
+          )
+        : cachedData;
+
+    const paginatedData = filtered.slice(offset, offset + limit);
+
+    return {
+        data: paginatedData,
+        pagination: {
+            offset,
+            limit,
+            count: paginatedData.length,
+            total: filtered.length,
+        },
+    };
+}
+
+// Busqueda API
 export async function searchAirportsApi(query: string, offset = 0, limit = 10): Promise<AirportApiResponse> {
+    /*
     // Simulación de llamada API
     await delay(100);
 
@@ -244,31 +274,32 @@ export async function searchAirportsApi(query: string, offset = 0, limit = 10): 
         },
         data: paginatedData
     };
-
-    /*
-    // Implementacion real de API
-    try {
-        const API_KEY = process.env.NEXT_PUBLIC_AVIATIONSTACK_API_KEY
-        const API_URL = process.env.NEXT_PUBLIC_AVIATIONSTACK_API_URL
-
-        const response = await fetch(
-            `${API_URL}/airports?access_key=${API_KEY}&search=${query}&limit=${limit}&offset=${offset}`
-        )
-
-        if (!response.ok) {
-            throw new Error('Fallo al buscar aeropuertos')
-        }
-
-        const data = await response.json()
-        
-        return {
-            data: data.data,
-            pagination: data.pagination
-        }
-    } catch (error) {
-        console.error('Error haciendo fetch:', error)
-        throw error
-    }
     */
 
+    // Implementacion real de API
+    try {
+        const API_KEY = process.env.NEXT_PUBLIC_AVIATIONSTACK_API_KEY;
+        const API_URL = process.env.NEXT_PUBLIC_AVIATIONSTACK_API_URL;
+
+        const response = await fetch(
+            `${API_URL}/airports?access_key=${API_KEY}&search=${query}&limit=${limit}&offset=${offset}`,
+            {
+                next: { revalidate: 3600 }, // Cache por 1 hora (3600 segundos)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Fallo al buscar aeropuertos');
+        }
+
+        const data = await response.json();
+
+        return {
+            data: data.data,
+            pagination: data.pagination,
+        };
+    } catch (error) {
+        console.error('Error haciendo fetch:', error);
+        throw error;
+    }
 }

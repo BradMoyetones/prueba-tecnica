@@ -1,7 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { MapPin, Plane, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Airport } from '@/types/airport';

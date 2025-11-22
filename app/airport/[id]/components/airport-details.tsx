@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { ArrowLeft, Clock, Globe, Info, MapPin, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -12,7 +12,6 @@ import 'leaflet/dist/leaflet.css';
 import { LatLngExpression } from 'leaflet';
 import { Tabs, TabsPanel, TabsPanels, TabsList, TabsTab } from '@/components/animate-ui/components/base/tabs';
 import { getLocalTime } from '@/lib/utils';
-import { useTheme } from 'next-themes';
 
 interface AirportDetailsProps {
     airportId: string;
@@ -22,7 +21,7 @@ export function AirportDetails({ airportId }: AirportDetailsProps) {
     const router = useRouter();
     const { getAirportById } = useAirportStore();
     const airport = getAirportById(airportId);
-    const {setTheme} = useTheme()
+    // const {setTheme} = useTheme() testing de cambio de tema exitoso y se implementa componente
 
     useEffect(() => {
         // En caso de no encontrar el aeropuerto ir al Home
@@ -73,7 +72,7 @@ export function AirportDetails({ airportId }: AirportDetailsProps) {
                                             initial={{ opacity: 0, x: -20 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.2 }}
-                                            className="text-3xl md:text-4xl font-bold text-foreground text-balance mb-2 bg-linear-to-r from-primary via-indigo-400 to-primary bg-clip-text text-transparent"
+                                            className="text-3xl md:text-4xl font-bold text-balance mb-2 bg-linear-to-r from-primary via-indigo-400 to-primary bg-clip-text text-transparent"
                                         >
                                             {airport.airport_name}
                                         </motion.h1>

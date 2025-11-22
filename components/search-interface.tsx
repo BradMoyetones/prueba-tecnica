@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { SearchBar } from './search-bar';
 import { AirportCard } from './airport-card';
 import { useAirportStore } from '@/store/airport-store';
@@ -20,10 +20,12 @@ import {
 } from './ui/pagination';
 import { ModeToggle } from './mode-toggle';
 
+import { SearchModeToggle } from "./search-mode-toggle"
+
 export function SearchInterface() {
     const [hasSearched, setHasSearched] = useState(false);
 
-    const { data, isLoading, error, currentPage, itemsPerPage, goToPage } = useAirportStore();
+    const { data, isLoading, error, currentPage, itemsPerPage, goToPage, searchMode, setSearchMode } = useAirportStore();
 
     const handleSearch = () => {
         setHasSearched(true);
@@ -117,12 +119,22 @@ export function SearchInterface() {
                         <motion.header className="sticky top-0 z-50 bg-background/30 backdrop-blur-2xl">
                             <div className="container mx-auto px-4 py-2">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                    <motion.div layoutId="title" className="flex items-center gap-2">
+                                    <motion.div layoutId="title" className="flex items-center justify-between gap-2">
                                         <h1 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-primary to-indigo-400 bg-clip-text text-transparent">
                                             SkyConnect Explorer
                                         </h1>
+
+                                        {/* Modo de busqueda en dispositivos móbiles */}
+                                        <div className='flex md:hidden'>
+                                            <SearchModeToggle mode={searchMode} onModeChange={setSearchMode} />
+                                        </div>
                                     </motion.div>
                                     <motion.div layoutId="search" className="flex-1 md:max-w-xl flex items-center gap-4">
+                                        {/* Modo de busqueda */}
+                                        <div className='hidden md:flex'>
+                                            <SearchModeToggle mode={searchMode} onModeChange={setSearchMode} />
+                                        </div>
+
                                         <SearchBar onSearch={handleSearch} compact />
                                         {/* Modo toggle extra, utiliza dropdown de shadcn y useTheme de next-themes */}
                                         <ModeToggle />
