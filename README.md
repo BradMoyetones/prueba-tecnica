@@ -61,7 +61,7 @@ Sigue estos pasos para correr el proyecto en tu máquina:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://github.com/BradMoyetones/prueba-tecnica.git](https://github.com/BradMoyetones/prueba-tecnica.git)
+    git clone https://github.com/BradMoyetones/prueba-tecnica.git
     cd prueba-tecnica
     ```
 
@@ -77,7 +77,7 @@ Sigue estos pasos para correr el proyecto en tu máquina:
     # .env
     NEXT_PUBLIC_APP_URL=http://localhost:3000
     NEXT_PUBLIC_AVIATIONSTACK_API_KEY=tu_api_key_aqui
-    NEXT_PUBLIC_AVIATIONSTACK_API_URL=[http://api.aviationstack.com/v1](http://api.aviationstack.com/v1)
+    NEXT_PUBLIC_AVIATIONSTACK_API_URL=http://api.aviationstack.com/v1
     ```
 
 4.  **Correr el servidor de desarrollo:**
