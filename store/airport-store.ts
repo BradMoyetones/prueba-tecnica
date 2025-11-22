@@ -23,12 +23,18 @@ export const useAirportStore = create<AirportStore>()(
             searchQuery: "",
             setSearchQuery: (query: string) => set({ searchQuery: query }),
 
+            // Historial de busquedas
+            searchHistory: [],
+
             // Busqueda con query para obtener los datos paginados
             searchAirports: async (query: string) => {
                 set({ isLoading: true, error: null, searchQuery: query, data: null, currentPage: 1 })
 
                 try {
-                    const { itemsPerPage, searchMode, allData } = get()
+                    const { itemsPerPage, searchMode, allData, addToHistory } = get()
+
+                    // Agregar query al historial cuando se realiza una búsqueda
+                    addToHistory(query)
 
                     let response: AirportApiResponse
 
@@ -84,6 +90,27 @@ export const useAirportStore = create<AirportStore>()(
             clearError: () => set({ error: null }),
 
             reset: () => set({ data: null, isLoading: false, error: null, searchQuery: "", currentPage: 1 }),
+
+
+            // Metodos para el historial de busquedas
+            addToHistory: (term: string) => {
+                const { searchHistory } = get()
+                const trimmedTerm = term.trim()
+
+                if (!trimmedTerm) return
+
+                // Evitar duplicados y mantener máximo 10 búsquedas para no saturar el store
+                const newHistory = [trimmedTerm, ...searchHistory.filter((item) => item !== trimmedTerm)].slice(0, 10)
+
+                set({ searchHistory: newHistory })
+            },
+
+            removeFromHistory: (term: string) => {
+                const { searchHistory } = get()
+                set({ searchHistory: searchHistory.filter((item) => item !== term) })
+            },
+
+            clearHistory: () => set({ searchHistory: [] }),
         }),
         {
             name: 'aviationstack',

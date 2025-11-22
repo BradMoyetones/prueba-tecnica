@@ -16,4 +16,11 @@ export interface AirportStore {
     getAirportById: (id: string) => Airport | undefined;
     clearError: () => void;
     reset: () => void
+
+
+    // Historial de busqueda de terminos
+    searchHistory: string[]
+    addToHistory: (term: string) => void
+    removeFromHistory: (term: string) => void
+    clearHistory: () => void
 }
