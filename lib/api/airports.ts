@@ -216,7 +216,7 @@ const mockAirports: Airport[] = [
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Busqueda cacheada
-export function searchAirportsCached(cachedData: Airport[], query: string, offset = 0, limit = 12): AirportApiResponse {
+export function searchAirportsCached(cachedData: Airport[], query: string, offset = 0, limit = 10): AirportApiResponse {
     const lowerQuery = query.toLowerCase().trim();
 
     const filtered = lowerQuery
