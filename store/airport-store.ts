@@ -16,7 +16,7 @@ export const useAirportStore = create<AirportStore>()(
             itemsPerPage: 10,
 
             // Por defecto busqueda cacheada para evitar errores API
-            searchMode: "cached",
+            searchMode: "api",
             setSearchMode: (mode: SearchMode) => set({ searchMode: mode }),
 
             // Nuevo estado añadido para la gestion de la query realizada
@@ -49,7 +49,7 @@ export const useAirportStore = create<AirportStore>()(
 
                     set({ data: response, isLoading: false })
                 } catch (error) {
-                    const errorMessage = error instanceof Error ? error.message : 'Fallo al buscar aeropuertos';
+                    const errorMessage = error instanceof Error ? error.message : 'Fallo al buscar aeropuertos, intente buscar en el modo Cache';
                     set((state) => ({ error: errorMessage, isLoading: false, data: state.data }));
                 }
             },
